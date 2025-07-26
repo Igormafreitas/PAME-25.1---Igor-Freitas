@@ -6,6 +6,10 @@ class Reserva{
         this.check_in = check_in;
         this.check_out = check_out;
     }
+
+    verDados(){
+        console.log(`ID da reserva: ${this.id_reserva} | ID do cliente: ${this.id_cliente} | Status: ${this.status} | Data de entrada: ${this.check_in} | Data de saída: ${this.check_out}\n\n`);
+    }
 }
 
 class Quarto{
@@ -15,6 +19,10 @@ class Quarto{
         this.quantidade_disponivel = quantidade_disponivel;
         this.nome = nome;
         this.descricao = descricao;
+    }
+
+    verDados(){
+        console.log(`Quantidade de camas: ${this.numero_cama} | Preço por noite: R$${this.numero_cama} | Quantidade disponível: ${quantidade_disponivel}\nNome: ${this.nome} | Descrição: ${this.descricao}`);
     }
 }
 
@@ -28,7 +36,43 @@ class Funcionario{
     }
 
     verDados(){
-        console.log(`ID do funcionário: ${this.id_funcionario}\nNome de usuário: ${this.nome_usuario}\nCPF: ${this.cpf}\nE-mail: ${this.email}\nSenha: ${this.senha}\n\n`)
+        console.log(`ID do funcionário: ${this.id_funcionario} | Nome de usuário: ${this.nome_usuario} | CPF: ${this.cpf} | E-mail: ${this.email} | Senha: ${this.senha}\n\n`);
+    }
+    
+    verListaReserva(lista_reserva){
+        if (lista_reserva.length == 0){
+            console.log('A lista de reservas está vazia.');
+        }
+        else{
+            for(let reserva = 0; reserva < lista_reserva.length; reserva++){
+                lista_reserva[reserva].verDados();
+            }
+        }
+        console.log('\n');
+    }
+
+    verListaQuarto(lista_quarto){
+        if (lista_quarto.length == 0){
+            console.log('A lista de quartos está vazia.');
+        }
+        else{
+            for(let quarto = 0; quarto < lista_quarto.length; quarto++){
+                lista_quarto[quarto].verDados();
+            }
+        }
+        console.log('\n');
+    }
+
+    verListaCliente(lista_cliente){
+        if (lista_cliente.length == 0){
+            console.log('A lista de clientes está vazia.');
+        }
+        else{
+            for(let cliente = 0; cliente < lista_cliente.length; cliente++){
+                lista_cliente[cliente].verDados();
+            }
+        }
+        console.log('\n');
     }
 }
 
@@ -43,7 +87,7 @@ class Cliente{
     }
 
     verDados(){
-        console.log(`ID do cliente: ${this.id_cliente}\nNome: ${this.nome}\nData de nascimento: ${this.data_nascimento}\nCPF: ${this.cpf}\nE-mail: ${this.email}\nSenha: ${this.senha}\n\n`)
+        console.log(`ID do cliente: ${this.id_cliente} | Nome: ${this.nome} | Data de nascimento: ${this.data_nascimento} | CPF: ${this.cpf} | E-mail: ${this.email} | Senha: ${this.senha}\n\n`);
     }
 }
 
@@ -57,7 +101,7 @@ class Avaliacao{
 class Sistema{
 }
 
-lista_reserva=[]
-lista_quarto=[]
-lista_cliente=[]
-lista_avaliacao=[]
+lista_reserva=[];
+lista_quarto=[];
+lista_cliente=[];
+lista_avaliacao=[];
