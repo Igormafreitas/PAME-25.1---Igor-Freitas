@@ -74,6 +74,25 @@ class Funcionario{
         }
         console.log('\n');
     }
+
+    mudarStatusReserva(lista_reserva){
+        var requisicao = require('readline-sync');
+        var id_escolhido = requisicao.question('Qual reserva você deseja mudar os status? (Digite o ID da Reserva): ');
+        const reserva = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
+        if (id_escolhido == undefined){
+            console.log(`O ID ${id_escolhido} não existe.`);
+        }
+        else {
+            var novo_status = requisicao.question(`Para qual status você deseja alterar a sua reserva ID ${id_escolhido}? (pendente, adiada, realizada, cancelada)`);
+            if (novo_status == "pendente" || novo_status == "adiada" || novo_status == "realizada" || novo_status == "cancelada"){
+                console.log(`A reserva ID ${id_escolhido} foi alterada de ${reserva.status} para ${novo_status}`);
+                reserva.status = novo_status;
+            }
+            else {
+                console.log(`O status da reserva ID ${id_escolhido} não pode ser alterado, porque o status ${novo_status} não existe. Tente novamente.`);
+            }      
+        }
+    }
 }
 
 class Cliente{
