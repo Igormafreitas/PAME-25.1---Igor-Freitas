@@ -1,14 +1,15 @@
 class Reserva{
-    constructor(id_reserva , id_cliente, status, check_in, check_out){
+    constructor(id_reserva , id_cliente, nome_quarto, status, check_in, check_out){
         this.id_reserva = id_reserva;
         this.id_cliente = id_cliente;
+        this.nome_quarto = nome_quarto;
         this.status = status;
         this.check_in = check_in;
         this.check_out = check_out;
     }
 
     verDados(){ //Função para exibir os dados da reserva
-        console.log(`ID da reserva: ${this.id_reserva} | ID do cliente: ${this.id_cliente} | Status: ${this.status} | Data de entrada: ${this.check_in} | Data de saída: ${this.check_out}\n\n`);
+        console.log(`ID da reserva: ${this.id_reserva} | ID do cliente: ${this.id_cliente} | Nome do quarto: ${this.nome_quarto} | Status: ${this.status} | Data de entrada: ${this.check_in} | Data de saída: ${this.check_out}\n\n`);
     }
 }
 
@@ -143,14 +144,80 @@ class Cliente{
         console.log('\n');
     }
 
-    fazerReserva(lista_reserva, contador_id_reserva){
+    fazerReserva(lista_reserva, lista_quarto, contador_id_reserva){ //Função para fazer uma reserva
         var requisicao = require('readline-sync');
         var data_entrada = requisicao.question('Digite a data de entrada da reserva (DD/MM/AAAA): ');
         console.log('\n');
-        let id_reserva = String(contador_id_reserva).padStart(6,'0');
-        contador_id_reserva++;
-        const nova_reserva = new Reserva(id_reserva, this.id_cliente, "pendente", data_entrada, '');
-        lista_reserva.push(nova_reserva);        
+        var nome_escolhido = requisicao.question('Qual o nome do quarto que você deseja se hospedar?\n');
+        console.log('\n');
+        const quarto_escolhido = lista_quarto.find(indice => indice.nome === nome_escolhido);
+        if (quarto_escolhido == undefined){ //Caso não exista o quarto
+            mensagem = console.log(`O quarto de nome ${nome_escolhido} não existe. Tente novamente.\n\n`)
+        }
+        else if (quarto_escolhido.quantidade_disponivel == 0){ //Caso não possua nenhum quarto disponível
+            mensagem = console.log(`O quarto de nome ${nome_escolhido} não possui quarto disponível.\n\n`);
+        }
+        else{ //Registro da reserva
+            let id_reserva = String(contador_id_reserva).padStart(6,'0');
+            contador_id_reserva++;
+            quarto_escolhido.quantidade_disponivel--;
+            const nova_reserva = new Reserva(id_reserva, this.id_cliente, nome_escolhido, "pendente", data_entrada, '');
+            lista_reserva.push(nova_reserva);
+            console_log(`Nova reserva ID ${nova_reserva.id_reserva} realizada com sucesso.\n\n`);
+            mensagem = nova_reserva.verDados();
+        }
+        
+        return mensagem;
+    }
+
+    finalizarReserva(lista_reserva){ //Função para finalizar uma reserva
+        var requisicao = require('readline-sync');
+        var id_escolhido = requisicao.question('Digite o ID da reserva que deseja finalizar: ');
+        console.log('\n');
+        const reserva_finalizada = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
+        if (reserva_finalizada == undefined){ //Caso não exista a reserva escolhida
+            mensagem = console.log(`O ID ${id_escolhido} não existe.\n\n`);
+        }
+        else if (reserva_finalizada.id_cliente != this.id_cliente){ //Caso o ID do cliente seja o de outro cliente
+            mensagem = console.log(`Você não pode finalizar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
+        }
+        else if (reserva_finalizada.status == 'realizada'){ //Caso a reserva já tenha sido finalizada
+            mensagem = console.log(`A reserva ID ${id_escolhido} já foi finalizada no dia ${reserva_finalizada.check_out}.\n\n`);
+        }
+        else{ //Finalizando a reserva
+            var data_saida = requisicao.question('Digite a data de saída da reserva (DD/MM/AAAA): ');
+            console.log('\n');
+            reserva_finalizada.status = 'realizada';            
+            reserva_finalizada.check_out = data_saida;
+            console.log(`A reserva ID ${id_escolhido} realizada com sucesso no dia ${reserva_finalizada.check_in} e finalizada no dia ${reserva_finalizada.check_out}\n\n`);
+            mensagem = reserva_finalizada.verDados();            
+        }
+
+        return mensagem;
+    }
+
+    cancelarReserva(lista_reserva,lista_quarto){ //Função para cancelar uma reserva
+        var requisicao = require('readline-sync');
+        var id_escolhido = requisicao.question('Digite o ID da reserva que deseja cancelar: ');
+        console.log('\n');
+        const reserva_cancelada = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
+        if (reserva_cancelada == undefined){ //Caso não exista a reserva escolhida
+            mensagem = console.log(`O ID ${id_escolhido} não existe.\n\n`);
+        }
+        else if (reserva_cancelada.id_cliente != this.id_cliente){ //Caso o ID do cliente seja o de outro cliente
+            mensagem = console.log(`Você não pode cancelar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
+        }
+        else if (reserva_cancelada.status == 'cancelada'){ //Caso a reserva já tenha sido cancelada
+            mensagem = console.log(`A reserva ID ${id_escolhido} já foi cancelada.\n\n`);
+        }
+        else{ //Cancelando a reserva
+            reserva_cancelada.status = 'cancelada';
+            const quarto_cancelado = lista_quarto.find(indice => indice.nome === reserva_cancelada.nome_quarto);
+            quarto_cancelado.quantidade_disponivel++;
+            mensagem = console.log(`A reserva ID ${id_escolhido} foi cancelada.\n\n`);
+        }
+        
+        return mensagem;
     }
 }
 
