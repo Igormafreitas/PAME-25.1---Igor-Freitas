@@ -7,7 +7,7 @@ class Reserva{
         this.check_out = check_out;
     }
 
-    verDados(){
+    verDados(){ //Função para exibir os dados da reserva
         console.log(`ID da reserva: ${this.id_reserva} | ID do cliente: ${this.id_cliente} | Status: ${this.status} | Data de entrada: ${this.check_in} | Data de saída: ${this.check_out}\n\n`);
     }
 }
@@ -21,7 +21,7 @@ class Quarto{
         this.descricao = descricao;
     }
 
-    verDados(){
+    verDados(){ //Função para exibir os dados do quarto
         console.log(`Quantidade de camas: ${this.numero_cama} | Preço por noite: R$${this.numero_cama} | Quantidade disponível: ${quantidade_disponivel}\nNome: ${this.nome} | Descrição: ${this.descricao}`);
     }
 }
@@ -35,15 +35,15 @@ class Funcionario{
         this.senha = senha;
     }
 
-    verDados(){
+    verDados(){ //Função para exibir os dados do funcionário
         console.log(`ID do funcionário: ${this.id_funcionario} | Nome de usuário: ${this.nome_usuario} | CPF: ${this.cpf} | E-mail: ${this.email} | Senha: ${this.senha}\n\n`);
     }
     
-    verListaReserva(lista_reserva){
-        if (lista_reserva.length == 0){
+    verListaReserva(lista_reserva){ //Função para exibir todas as reservas
+        if (lista_reserva.length == 0){ //Caso ainda não exista nenhuma reserva
             console.log('A lista de reservas está vazia.');
         }
-        else{
+        else{ //Vai exibir os dados de cada reserva
             for(let reserva = 0; reserva < lista_reserva.length; reserva++){
                 lista_reserva[reserva].verDados();
             }
@@ -51,11 +51,11 @@ class Funcionario{
         console.log('\n');
     }
 
-    verListaQuarto(lista_quarto){
-        if (lista_quarto.length == 0){
+    verListaQuarto(lista_quarto){ //Função para exibir todos os quartos
+        if (lista_quarto.length == 0){ //Caso ainda não exista nenhum quarto
             console.log('A lista de quartos está vazia.');
         }
-        else{
+        else{ //Vai exibir os dados de cada quarto
             for(let quarto = 0; quarto < lista_quarto.length; quarto++){
                 lista_quarto[quarto].verDados();
             }
@@ -63,11 +63,11 @@ class Funcionario{
         console.log('\n');
     }
 
-    verListaCliente(lista_cliente){
-        if (lista_cliente.length == 0){
+    verListaCliente(lista_cliente){ //Função para exibir todos os clientes
+        if (lista_cliente.length == 0){ //Caso ainda não exista nenhum cliente
             console.log('A lista de clientes está vazia.');
         }
-        else{
+        else{ //Vai exibir os dados de cada cliente
             for(let cliente = 0; cliente < lista_cliente.length; cliente++){
                 lista_cliente[cliente].verDados();
             }
@@ -75,22 +75,43 @@ class Funcionario{
         console.log('\n');
     }
 
-    mudarStatusReserva(lista_reserva){
+    mudarStatusReserva(lista_reserva){ //Função para mudar os status de uma reserva
         var requisicao = require('readline-sync');
         var id_escolhido = requisicao.question('Qual reserva você deseja mudar os status? (Digite o ID da Reserva): ');
+        console.log('\n');
         const reserva = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
-        if (id_escolhido == undefined){
-            console.log(`O ID ${id_escolhido} não existe.`);
-        }
-        else {
-            var novo_status = requisicao.question(`Para qual status você deseja alterar a sua reserva ID ${id_escolhido}? (pendente, adiada, realizada, cancelada)`);
-            if (novo_status == "pendente" || novo_status == "adiada" || novo_status == "realizada" || novo_status == "cancelada"){
-                console.log(`A reserva ID ${id_escolhido} foi alterada de ${reserva.status} para ${novo_status}`);
+        if (reserva == undefined){ // Caso a reserva não exista
+            console.log(`O ID ${id_escolhido} não existe.\n\n`);
+        }   
+        else { //escolhida a reserva, vamos escolher o novo status
+            var novo_status = requisicao.question(`Para qual status você deseja alterar a sua reserva ID ${id_escolhido}? (pendente, adiada, realizada, cancelada)\n`);
+            console.log('\n');
+            const lista_status = ['pendente','adiada','realizada','cancelada'];
+            if (lista_status.includes(novo_status)){ //alteração de status da reserva
+                console.log(`A reserva ID ${id_escolhido} foi alterada de ${reserva.status} para ${novo_status}\n\n`);
                 reserva.status = novo_status;
             }
-            else {
-                console.log(`O status da reserva ID ${id_escolhido} não pode ser alterado, porque o status ${novo_status} não existe. Tente novamente.`);
+            else { //caso o tipo de status não exista
+                console.log(`O status da reserva ID ${id_escolhido} não pode ser alterado, porque o status ${novo_status} não existe. Tente novamente.\n\n`);
             }      
+        }
+    }
+
+    adicionarQuarto(lista_quarto){ //Função para adicionar um novo quarto
+        var requisicao = require('readline-sync');
+        var novo_nome = requisicao.question('Qual o nome do quarto que deseja adicionar?\n');
+        const quarto = lista_quarto.find(indice => indice.nome === novo_nome);
+        if (quarto != undefined){ //Caso o quarto já exista
+            var nova_quantidade_disponivel = parseInt(requisicao.question('Esse quarto já existe. Caso deseja editar esse quarto, vá em "Editar quarto".\n'))
+            console.log(`A quantidade disponível do quarto ${quarto.nome} aumentou para ${quarto.quantidade_disponivel}`);
+        }
+        else{ //Adicionando um novo quarto
+            var novo_numero_cama = parseInt(requisicao.question('Quantas camas tem no novo quarto?\n'));
+            var novo_preco = parseFloat(requisicao.question('Qual o preço por noite?\n'));
+            var nova_quantidade_disponivel = parseInt(requisicao.question('Quantos quartos disponíveis tem nesse novo estilo de quarto?\n'));
+            var nova_descricao = requisicao.question('Por fim, adicione uma descrição para o quarto: ');
+            
+            const novo_quarto = new Quarto(novo_numero_cama,novo_preco,nova_quantidade_disponivel,novo_nome,nova_descricao);
         }
     }
 }
@@ -105,7 +126,7 @@ class Cliente{
         this.senha = senha;
     }
 
-    verDados(){
+    verDados(){ //Função para exibir os dados do cliente
         console.log(`ID do cliente: ${this.id_cliente} | Nome: ${this.nome} | Data de nascimento: ${this.data_nascimento} | CPF: ${this.cpf} | E-mail: ${this.email} | Senha: ${this.senha}\n\n`);
     }
 }
