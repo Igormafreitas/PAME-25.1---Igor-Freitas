@@ -41,7 +41,7 @@ class Funcionario{
     
     verListaReserva(lista_reserva){ //Função para exibir todas as reservas
         if (lista_reserva.length == 0){ //Caso ainda não exista nenhuma reserva
-            console.log('A lista de reservas está vazia.');
+            console.log('A lista de reservas está vazia.\n');
         }
         else{ //Vai exibir os dados de cada reserva
             for(let reserva = 0; reserva < lista_reserva.length; reserva++){
@@ -53,7 +53,7 @@ class Funcionario{
 
     verListaQuarto(lista_quarto){ //Função para exibir todos os quartos
         if (lista_quarto.length == 0){ //Caso ainda não exista nenhum quarto
-            console.log('A lista de quartos está vazia.');
+            console.log('A lista de quartos está vazia.\n');
         }
         else{ //Vai exibir os dados de cada quarto
             for(let quarto = 0; quarto < lista_quarto.length; quarto++){
@@ -65,7 +65,7 @@ class Funcionario{
 
     verListaCliente(lista_cliente){ //Função para exibir todos os clientes
         if (lista_cliente.length == 0){ //Caso ainda não exista nenhum cliente
-            console.log('A lista de clientes está vazia.');
+            console.log('A lista de clientes está vazia.\n');
         }
         else{ //Vai exibir os dados de cada cliente
             for(let cliente = 0; cliente < lista_cliente.length; cliente++){
@@ -111,7 +111,8 @@ class Funcionario{
             var nova_quantidade_disponivel = parseInt(requisicao.question('Quantos quartos disponíveis tem nesse novo estilo de quarto?\n'));
             var nova_descricao = requisicao.question('Por fim, adicione uma descrição para o quarto: ');
             
-            const novo_quarto = new Quarto(novo_numero_cama,novo_preco,nova_quantidade_disponivel,novo_nome,nova_descricao);
+            const novo_quarto = new Quarto(novo_numero_cama, novo_preco, nova_quantidade_disponivel, novo_nome, nova_descricao);
+            lista_quarto.push(novo_quarto);
         }
     }
 }
@@ -129,11 +130,34 @@ class Cliente{
     verDados(){ //Função para exibir os dados do cliente
         console.log(`ID do cliente: ${this.id_cliente} | Nome: ${this.nome} | Data de nascimento: ${this.data_nascimento} | CPF: ${this.cpf} | E-mail: ${this.email} | Senha: ${this.senha}\n\n`);
     }
+
+    verListaQuarto(lista_quarto){ //Função para exibir todos os quartos
+        if (lista_quarto.length == 0){ //Caso ainda não exista nenhum quarto
+            console.log('A lista de quartos está vazia.\n');
+        }
+        else{ //Vai exibir os dados de cada quarto
+            for(let quarto = 0; quarto < lista_quarto.length; quarto++){
+                lista_quarto[quarto].verDados();
+            }
+        }
+        console.log('\n');
+    }
+
+    fazerReserva(lista_reserva, contador_id_reserva){
+        var requisicao = require('readline-sync');
+        var data_entrada = requisicao.question('Digite a data de entrada da reserva (DD/MM/AAAA): ');
+        console.log('\n');
+        let id_reserva = String(contador_id_reserva).padStart(6,'0');
+        contador_id_reserva++;
+        const nova_reserva = new Reserva(id_reserva, this.id_cliente, "pendente", data_entrada, '');
+        lista_reserva.push(nova_reserva);        
+    }
 }
 
 class Avaliacao{
-    constructor(id_avaliacao, estrela, descricao){
+    constructor(id_avaliacao, nome, estrela, descricao){
         this.id_avaliacao = id_avaliacao;
+        this.nome = nome;
         this.estrela = estrela;
         this.descricao = descricao;
     }
@@ -145,3 +169,7 @@ lista_reserva=[];
 lista_quarto=[];
 lista_cliente=[];
 lista_avaliacao=[];
+contador_id_reserva = 0;
+contador_id_funcionario = 0;
+contador_id_cliente = 0;
+contador_id_avaliacao = 0;
