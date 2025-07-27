@@ -1,3 +1,47 @@
+function validarData(data){ //função para verificar se uma data existe
+    let validacao;
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data)){ // Verifica se o formato está correto: DD/MM/AAAA
+        console.log(`A data ${data} não está no formato válido. (DD/MM/AAAA)`);       
+        validacao = false;
+    }
+    else {
+        const [dia, mes, ano] = data.split('/').map(Number);
+        if (mes < 1 || mes > 12 || dia < 1 || ano < 2024 || ano > 9999) { //Verifica se os números fazem sentido
+            console.log(`A data ${data} não faz sentido.`);
+            validacao = false;
+        }
+        else{
+            const data_escolhida = new Date(ano, mes - 1, dia); //Verifica se realmente existe
+            validacao = data_escolhida.getDate() === dia && data_escolhida.getMonth() === mes - 1 && data_escolhida.getFullYear() === ano;
+            if (validacao = false){
+                console.log(`A data ${data} não existe.`)
+            }
+        }
+    }
+
+    return validacao;
+}
+
+function validarCheckInCheckOut(data_check_in,data_check_out){
+    let validacao;
+    const [dia_check_in, mes_check_in, ano_check_in] = data_check_in.split('/').map(Number);
+    const [dia_check_out, mes_check_out, ano_check_out] = data_check_out.split('/').map(Number);
+    const check_in = new Date(ano_check_in, mes_check_in - 1, dia_check_in);
+    const check_out = new Date(ano_check_out, mes_check_out - 1, dia_check_out);
+    if(check_out <= check_in){ //Caso a data de saída venha antes da data de entrada
+        console.log(`A data de saída ${data_check_out} não pode vir antes da data de entrada ${data_check_in}.`);
+        validacao = false;
+    }
+    else if(check_out == check_in){ //Caso as datas sejam no mesmo dia
+        console.log(`A data de saída não pode ser a mesma da data de entrada (${data_check_out}).`);
+        validacao = false;
+    }
+    else{
+        validacao = true;
+    }
+    return validacao;
+}
+
 class Reserva{
     constructor(id_reserva , id_cliente, nome_quarto, status, check_in, check_out){
         this.id_reserva = id_reserva;
@@ -148,23 +192,29 @@ class Cliente{
         var requisicao = require('readline-sync');
         var data_entrada = requisicao.question('Digite a data de entrada da reserva (DD/MM/AAAA): ');
         console.log('\n');
-        var nome_escolhido = requisicao.question('Qual o nome do quarto que você deseja se hospedar?\n');
-        console.log('\n');
-        const quarto_escolhido = lista_quarto.find(indice => indice.nome === nome_escolhido);
-        if (quarto_escolhido == undefined){ //Caso não exista o quarto
-            mensagem = console.log(`O quarto de nome ${nome_escolhido} não existe. Tente novamente.\n\n`)
+        const validacao_data = validarData(data_entrada);
+        if (validacao_data == false){ //Caso a data não exista
+            mensagem = console.log(' Tente novamente.\n\n')
         }
-        else if (quarto_escolhido.quantidade_disponivel == 0){ //Caso não possua nenhum quarto disponível
-            mensagem = console.log(`O quarto de nome ${nome_escolhido} não possui quarto disponível.\n\n`);
-        }
-        else{ //Registro da reserva
-            let id_reserva = String(contador_id_reserva).padStart(6,'0');
-            contador_id_reserva++;
-            quarto_escolhido.quantidade_disponivel--;
-            const nova_reserva = new Reserva(id_reserva, this.id_cliente, nome_escolhido, "pendente", data_entrada, '');
-            lista_reserva.push(nova_reserva);
-            console_log(`Nova reserva ID ${nova_reserva.id_reserva} realizada com sucesso.\n\n`);
-            mensagem = nova_reserva.verDados();
+        else{
+            var nome_escolhido = requisicao.question('Qual o nome do quarto que você deseja se hospedar?\n');
+            console.log('\n');
+            const quarto_escolhido = lista_quarto.find(indice => indice.nome === nome_escolhido);
+            if (quarto_escolhido == undefined){ //Caso não exista o quarto
+                mensagem = console.log(`O quarto de nome ${nome_escolhido} não existe. Tente novamente.\n\n`)
+            }
+            else if (quarto_escolhido.quantidade_disponivel == 0){ //Caso não possua nenhum quarto disponível
+                mensagem = console.log(`O quarto de nome ${nome_escolhido} não possui quarto disponível.\n\n`);
+            }
+            else{ //Registro da reserva
+                let id_reserva = String(contador_id_reserva).padStart(6,'0');
+                contador_id_reserva++;
+                quarto_escolhido.quantidade_disponivel--;
+                const nova_reserva = new Reserva(id_reserva, this.id_cliente, nome_escolhido, "pendente", data_entrada, '');
+                lista_reserva.push(nova_reserva);
+                console_log(`Nova reserva ID ${nova_reserva.id_reserva} realizada com sucesso.\n\n`);
+                mensagem = nova_reserva.verDados();
+            }
         }
         
         return mensagem;
@@ -184,13 +234,26 @@ class Cliente{
         else if (reserva_finalizada.status == 'realizada'){ //Caso a reserva já tenha sido finalizada
             mensagem = console.log(`A reserva ID ${id_escolhido} já foi finalizada no dia ${reserva_finalizada.check_out}.\n\n`);
         }
-        else{ //Finalizando a reserva
+        else{ //Indicar a data de saída
             var data_saida = requisicao.question('Digite a data de saída da reserva (DD/MM/AAAA): ');
             console.log('\n');
-            reserva_finalizada.status = 'realizada';            
-            reserva_finalizada.check_out = data_saida;
-            console.log(`A reserva ID ${id_escolhido} realizada com sucesso no dia ${reserva_finalizada.check_in} e finalizada no dia ${reserva_finalizada.check_out}\n\n`);
-            mensagem = reserva_finalizada.verDados();            
+            const validacao_data = validarData(data_saida);
+            if (validacao_data == false){ // Caso a data não exista
+                mensagem = console.log(' Tente novamente.\n\n');
+            }
+            else{ //Comparar as datas de check-in e check-out
+                const validacao = validarCheckInCheckOut(reserva_finalizada.check_in, data_saida);
+                if (validacao == false){ //Caso a o check-out não seja compatível com o check-in
+                    mensagem = console.log(' Tente novamente.\n\n');
+                }
+                else{ //Finalizando a reserva
+                    reserva_finalizada.status = 'realizada';            
+                    reserva_finalizada.check_out = data_saida;
+                    console.log(`A reserva ID ${id_escolhido} realizada com sucesso no dia ${reserva_finalizada.check_in} e finalizada no dia ${reserva_finalizada.check_out}\n\n`);
+                    mensagem = reserva_finalizada.verDados();                   
+                }
+            }
+
         }
 
         return mensagem;
@@ -218,6 +281,18 @@ class Cliente{
         }
         
         return mensagem;
+    }
+
+    verReserva(lista_reserva){ //Função para mostrar todas as reservas do cliente
+        const reserva_cliente = lista_reserva.filter(reserva => reserva.id_cliente === this.id_cliente);
+        if(reserva_cliente.length == 0){ //Caso o cliente não tenha reservas
+            mensagem = console.log('Você ainda não possui nenhuma reserva registrada.');
+        }
+        else { //Exibindo cada reserva do cliente
+            for(let minha_reserva = 0; minha_reserva < reserva_cliente.length; minha_reserva++){
+                reserva_cliente[minha_reserva].verDados();
+            }
+        }
     }
 }
 
