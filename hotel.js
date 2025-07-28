@@ -261,7 +261,92 @@ class Sistema{
         this.contador_id_cliente = 0;
         this.contador_id_avaliacao = 0;
     }
+
+    fazerCadastro(){ //Função para fazer cadastro no sistema
+        var cadastro_escolhido = requisicao.question('Você deseja fazer cadastro como:\n1) Cliente\n2) Funcionário\n');
+        console.log('\n');
+        if(cadastro_escolhido == '1'){ //Cadastrar como cliente
+            fazerCadastroCliente();
+        }
+        else if(cadastro_escolhido == '2'){ //Cadastrar como funcionário
+            fazerCadastroFuncionario();
+        }
+        else{ //Caso o usuário escreva algo sem sentido
+            console.log(`${cadastro_escolhido} não funciona. Por favor, escreva "1" para cliente ou "2" para funcionario.\n\n`);
+        }        
+    }
+
+    fazerCadastroCliente(){ //Função para fazer o cadastro do cliente
+        var nome_cadastrado = requisicao.question('Insira o seu nome: ');
+        console.log('\n');
+        const validacao_nome = /^[a-zA-Z\s]+$/.test(nome_cadastrado);
+        if (validacao_nome == false){ //Caso seja um nome inválido
+            console.log(`O nome ${nome_cadastrado} não é um nome válido. Insira apenas letras e espaços. Tente novamente.\n\n`);
+        }
+        else{
+            var data_nascimento = requisicao.question('Insira a sua data de nascimento (DD/MM/AAAA): ');
+            console.log('\n');
+            const validacao_data = validarData(data_nascimento);
+            if (validacao_data == false){ //Caso seja uma data de nascimento inválida
+                console.log(' Tente novamente.\n\n');
+            }
+            else{
+                var cpf_cadastrado = requisicao.question('Insira o seu CPF (apenas número): ');
+                console.log('\n');
+                const validacao_cpf = validarCpf(cpf_cadastrado, this.lista_cliente, this.contador_id_cliente);
+                if (validacao_cpf == false){
+                    console.log(' Tente novamente.\n\n');
+                }
+                else{
+                    var email_cadastrado = requisicao.question('Insira o seu email: ');
+                    console.log('\n');
+                    const validacao_email = validarEmail(email_cadastrado, this.lista_cliente, this.contador_id_cliente);
+                    if (validacao_email == false){
+                        console.log(' Tente novamente.\n\n');                    
+                    }
+                    else{
+                        var senha_cadastrada = requisicao.question('Insira uma senha: ');
+                        console.log('\n');
+                        let id_cliente = String(this.contador_id_cliente).padStart(5,'0');
+                        this.contador_id_cliente++;
+                        const novo_cliente = new Cliente(id_cliente, nome_cadastrado, data_nascimento, cpf_cadastrado, email_cadastrado, senha_cadastrada);
+                        this.lista_cliente.push(novo_cliente);
+                        console.log('Sua conta foi cadastrada com sucesso.\n\n');                                              
+                    }
+                } 
+            }        
+        }                                       
+    }
+
+    fazerCadastroFuncionario(){ //Função para fazer o cadastro do funcionario
+        var nome_usuario = requisicao.question('Insira o seu nome de usuário: ');
+        console.log('\n');
+        var cpf_cadastrado = requisicao.question('Insira o seu CPF (apenas número): ');
+        console.log('\n');
+        const validacao_cpf = validarCpf(cpf_cadastrado, this.lista_funcionario, this.contador_id_funcionario);
+        if (validacao_cpf == false){
+            console.log(' Tente novamente.\n\n');
+        }
+        else{
+            var email_cadastrado = requisicao.question('Insira o seu email: ');
+            console.log('\n');
+            const validacao_email = validarEmail(email_cadastrado, this.lista_funcionario, this.contador_id_funcionario);
+            if (validacao_email == false){
+                console.log(' Tente novamente.\n\n');
+            }
+            else{
+                var senha_cadastrada = requisicao.question('Insira uma senha: ');
+                console.log('\n');
+                let id_funcionario = String(this.contador_id_funcionario).padStart(4,'0');
+                this.contador_id_funcionario++;
+                const novo_funcionario = new Funcionario(id_funcionario, nome_usuario, cpf_cadastrado, email_cadastrado, senha_cadastrada);
+                this.lista_funcionario.push(novo_funcionario);
+                console.log('Sua conta foi cadastrada com sucesso.\n\n');                                              
+            }     
+        }        
+    }        
 }
+
 
 function validarData(data){ //função para verificar se uma data existe
     let validacao;
@@ -287,7 +372,7 @@ function validarData(data){ //função para verificar se uma data existe
     return validacao;
 }
 
-function validarCheckInCheckOut(data_check_in,data_check_out){
+function validarCheckInCheckOut(data_check_in,data_check_out){ //função para verificar se pode existir o check-out dependendo do check-in
     let validacao;
     const [dia_check_in, mes_check_in, ano_check_in] = data_check_in.split('/').map(Number);
     const [dia_check_out, mes_check_out, ano_check_out] = data_check_out.split('/').map(Number);
@@ -300,6 +385,46 @@ function validarCheckInCheckOut(data_check_in,data_check_out){
     else if(check_out == check_in){ //Caso as datas sejam no mesmo dia
         console.log(`A data de saída não pode ser a mesma da data de entrada (${data_check_out}).`);
         validacao = false;
+    }
+    else{
+        validacao = true;
+    }
+
+    return validacao;
+}
+
+function validarCpf(cpf,lista,contador){ //função para validar o CPF
+    let validacao;
+    const cpf_escolhido = lista.find(indice => indice.cpf === cpf);            
+    const validacao_cpf = /^[0-9]+$/.test(cpf);
+    if (validacao_cpf == false){ //Caso o CPF não tenha apenas número
+        console.log(`O CPF ${cpf} não é um CPF válido, porque não contem apenas número.\n\n`);
+        validacao = false;
+    }
+    else if (cpf.length != 11){ //Caso o tamanho do CPF não esteja no padrão
+        console.log(`O CPF ${cpf} não é um CPF válido.\n\n`);
+        validacao = false;
+    }
+    else if (cpf_escolhido != undefined){ //Caso o CPF já tenha sido cadastrado
+        console.log(`O CPF ${cpf} já foi cadastrado.\n\n`);
+        validacao = false;
+    }
+    else{
+        validacao = true;
+    }
+    
+    return validacao;
+}
+
+function validarEmail(email,lista,contador){ //função para validar o email
+    let validacao;
+    const email_escolhido = lista.find(indice => indice.email === email);
+    const validacao_email = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    if (validacao_email == false){ //Caso seja um email inválido
+        console.log(`O email ${email} não é um email válido.\n\n`);
+    }
+    else if (email_escolhido != undefined){ //Caso o email já tenha sido cadastrado
+        console.log(`O email ${email} já foi cadastrado.\n\n`);
     }
     else{
         validacao = true;
