@@ -45,57 +45,52 @@ class Funcionario{
     
     verListaReserva(lista_reserva){ //Função para exibir todas as reservas
         if (lista_reserva.length == 0){ //Caso ainda não exista nenhuma reserva
-            console.log('A lista de reservas está vazia.\n');
+            console.log('A lista de reservas está vazia.\n\n');
         }
         else{ //Vai exibir os dados de cada reserva
             for(let reserva = 0; reserva < lista_reserva.length; reserva++){
                 lista_reserva[reserva].verDados();
             }
         }
-        console.log('\n');
     }
 
     verListaQuarto(lista_quarto){ //Função para exibir todos os quartos
         if (lista_quarto.length == 0){ //Caso ainda não exista nenhum quarto
-            console.log('A lista de quartos está vazia.\n');
+            console.log('A lista de quartos está vazia.\n\n');
         }
         else{ //Vai exibir os dados de cada quarto
             for(let quarto = 0; quarto < lista_quarto.length; quarto++){
                 lista_quarto[quarto].verDados();
             }
         }
-        console.log('\n');
     }
 
     verListaCliente(lista_cliente){ //Função para exibir todos os clientes
         if (lista_cliente.length == 0){ //Caso ainda não exista nenhum cliente
-            console.log('A lista de clientes está vazia.\n');
+            console.log('A lista de clientes está vazia.\n\n');
         }
         else{ //Vai exibir os dados de cada cliente
             for(let cliente = 0; cliente < lista_cliente.length; cliente++){
                 lista_cliente[cliente].verDados();
             }
         }
-        console.log('\n');
     }
 
     mudarStatusReserva(lista_reserva){ //Função para mudar os status de uma reserva
         var id_escolhido = requisicao.question('Qual reserva você deseja mudar os status? (Digite o ID da Reserva): ');
-        console.log('\n');
         const reserva = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
         if (reserva == undefined){ // Caso a reserva não exista
-            console.log(`O ID ${id_escolhido} não existe.\n\n`);
+            console.log(`\nO ID ${id_escolhido} não existe.\n\n`);
         }   
         else { //escolhida a reserva, vamos escolher o novo status
-            var novo_status = requisicao.question(`Para qual status você deseja alterar a sua reserva ID ${id_escolhido}? (pendente, adiada, realizada, cancelada)\n`);
-            console.log('\n');
+            var novo_status = requisicao.question(`\nPara qual status você deseja alterar a sua reserva ID ${id_escolhido}? (pendente, adiada, realizada, cancelada)\n`);
             const lista_status = ['pendente','adiada','realizada','cancelada'];
             if (lista_status.includes(novo_status)){ //alteração de status da reserva
-                console.log(`A reserva ID ${id_escolhido} foi alterada de ${reserva.status} para ${novo_status}\n\n`);
+                console.log(`\nA reserva ID ${id_escolhido} foi alterada de ${reserva.status} para ${novo_status}\n\n`);
                 reserva.status = novo_status;
             }
             else { //caso o tipo de status não exista
-                console.log(`O status da reserva ID ${id_escolhido} não pode ser alterado, porque o status ${novo_status} não existe. Tente novamente.\n\n`);
+                console.log(`\nO status da reserva ID ${id_escolhido} não pode ser alterado, porque o status ${novo_status} não existe. Tente novamente.\n\n`);
             }      
         }
     }
@@ -134,32 +129,29 @@ class Cliente{
 
     verListaQuarto(lista_quarto){ //Função para exibir todos os quartos
         if (lista_quarto.length == 0){ //Caso ainda não exista nenhum quarto
-            console.log('A lista de quartos está vazia.\n');
+            console.log('A lista de quartos está vazia.\n\n');
         }
         else{ //Vai exibir os dados de cada quarto
             for(let quarto = 0; quarto < lista_quarto.length; quarto++){
                 lista_quarto[quarto].verDados();
             }
         }
-        console.log('\n');
     }
 
     fazerReserva(lista_reserva, lista_quarto, contador_id_reserva){ //Função para fazer uma reserva
         var data_entrada = requisicao.question('Digite a data de entrada da reserva (DD/MM/AAAA): ');
-        console.log('\n');
         const validacao_data = validarData(data_entrada);
         if (validacao_data == false){ //Caso a data não exista
             console.log(' Tente novamente.\n\n')
         }
         else{
-            var nome_escolhido = requisicao.question('Qual o nome do quarto que você deseja se hospedar?\n');
-            console.log('\n');
+            var nome_escolhido = requisicao.question('\nQual o nome do quarto que você deseja se hospedar?\n');
             const quarto_escolhido = lista_quarto.find(indice => indice.nome === nome_escolhido);
             if (quarto_escolhido == undefined){ //Caso não exista o quarto
-                console.log(`O quarto de nome ${nome_escolhido} não existe. Tente novamente.\n\n`)
+                console.log(`\nO quarto de nome ${nome_escolhido} não existe. Tente novamente.\n\n`)
             }
             else if (quarto_escolhido.quantidade_disponivel == 0){ //Caso não possua nenhum quarto disponível
-                console.log(`O quarto de nome ${nome_escolhido} não possui quarto disponível.\n\n`);
+                console.log(`\nO quarto de nome ${nome_escolhido} não possui quarto disponível.\n\n`);
             }
             else{ //Registro da reserva
                 let id_reserva = String(contador_id_reserva).padStart(6,'0');
@@ -167,7 +159,7 @@ class Cliente{
                 quarto_escolhido.quantidade_disponivel--;
                 const nova_reserva = new Reserva(id_reserva, this.id_cliente, nome_escolhido, "pendente", data_entrada, '');
                 lista_reserva.push(nova_reserva);
-                console.log(`Nova reserva ID ${nova_reserva.id_reserva} realizada com sucesso.\n\n`);
+                console.log(`\nNova reserva ID ${nova_reserva.id_reserva} realizada com sucesso.\n\n`);
                 nova_reserva.verDados();
             }
         }
@@ -175,20 +167,18 @@ class Cliente{
 
     finalizarReserva(lista_reserva){ //Função para finalizar uma reserva
         var id_escolhido = requisicao.question('Digite o ID da reserva que deseja finalizar: ');
-        console.log('\n');
         const reserva_finalizada = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
         if (reserva_finalizada == undefined){ //Caso não exista a reserva escolhida
-            console.log(`O ID ${id_escolhido} não existe.\n\n`);
+            console.log(`\nO ID ${id_escolhido} não existe.\n\n`);
         }
         else if (reserva_finalizada.id_cliente != this.id_cliente){ //Caso o ID do cliente seja o de outro cliente
-            console.log(`Você não pode finalizar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
+            console.log(`\nVocê não pode finalizar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
         }
         else if (reserva_finalizada.status == 'realizada'){ //Caso a reserva já tenha sido finalizada
-            console.log(`A reserva ID ${id_escolhido} já foi finalizada no dia ${reserva_finalizada.check_out}.\n\n`);
+            console.log(`\nA reserva ID ${id_escolhido} já foi finalizada no dia ${reserva_finalizada.check_out}.\n\n`);
         }
         else{ //Indicar a data de saída
             var data_saida = requisicao.question('Digite a data de saída da reserva (DD/MM/AAAA): ');
-            console.log('\n');
             const validacao_data = validarData(data_saida);
             if (validacao_data == false){ // Caso a data não exista
                 console.log(' Tente novamente.\n\n');
@@ -201,7 +191,7 @@ class Cliente{
                 else{ //Finalizando a reserva
                     reserva_finalizada.status = 'realizada';            
                     reserva_finalizada.check_out = data_saida;
-                    console.log(`A reserva ID ${id_escolhido} realizada com sucesso no dia ${reserva_finalizada.check_in} e finalizada no dia ${reserva_finalizada.check_out}\n\n`);
+                    console.log(`\nA reserva ID ${id_escolhido} realizada com sucesso no dia ${reserva_finalizada.check_in} e finalizada no dia ${reserva_finalizada.check_out}\n\n`);
                     reserva_finalizada.verDados();                   
                 }
             }
@@ -210,29 +200,28 @@ class Cliente{
 
     cancelarReserva(lista_reserva,lista_quarto){ //Função para cancelar uma reserva
         var id_escolhido = requisicao.question('Digite o ID da reserva que deseja cancelar: ');
-        console.log('\n');
         const reserva_cancelada = lista_reserva.find(indice => indice.id_reserva === id_escolhido);
         if (reserva_cancelada == undefined){ //Caso não exista a reserva escolhida
-            console.log(`O ID ${id_escolhido} não existe.\n\n`);
+            console.log(`\nO ID ${id_escolhido} não existe.\n\n`);
         }
         else if (reserva_cancelada.id_cliente != this.id_cliente){ //Caso o ID do cliente seja o de outro cliente
-            console.log(`Você não pode cancelar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
+            console.log(`\nVocê não pode cancelar a reserva ID ${id_escolhido} porque não é sua.\n\n`);
         }
         else if (reserva_cancelada.status == 'cancelada'){ //Caso a reserva já tenha sido cancelada
-            console.log(`A reserva ID ${id_escolhido} já foi cancelada.\n\n`);
+            console.log(`\nA reserva ID ${id_escolhido} já foi cancelada.\n\n`);
         }
         else{ //Cancelando a reserva
             reserva_cancelada.status = 'cancelada';
             const quarto_cancelado = lista_quarto.find(indice => indice.nome === reserva_cancelada.nome_quarto);
             quarto_cancelado.quantidade_disponivel++;
-            console.log(`A reserva ID ${id_escolhido} foi cancelada.\n\n`);
+            console.log(`\nA reserva ID ${id_escolhido} foi cancelada.\n\n`);
         }
     }
 
     verReserva(lista_reserva){ //Função para mostrar todas as reservas do cliente
         const reserva_cliente = lista_reserva.filter(reserva => reserva.id_cliente === this.id_cliente);
         if(reserva_cliente.length == 0){ //Caso o cliente não tenha reservas
-            console.log('Você ainda não possui nenhuma reserva registrada.');
+            console.log('Você ainda não possui nenhuma reserva registrada.\n\n');
         }
         else { //Exibindo cada reserva do cliente
             for(let minha_reserva = 0; minha_reserva < reserva_cliente.length; minha_reserva++){
@@ -250,6 +239,7 @@ class Avaliacao{
         this.descricao = descricao;
     }
 }
+
 class Sistema{
     constructor(lista_reserva, lista_quarto, lista_cliente, lista_avaliacao, contador_id_reserva, contador_id_funcionario, contador_id_cliente, contador_id_avaliacao){
         this.lista_reserva = [];
@@ -264,7 +254,6 @@ class Sistema{
 
     fazerCadastro(){ //Função para fazer cadastro no sistema
         var cadastro_escolhido = requisicao.question('Você deseja fazer cadastro como:\n1) Cliente\n2) Funcionário\n');
-        console.log('\n');
         if(cadastro_escolhido == '1'){ //Cadastrar como cliente
             fazerCadastroCliente();
         }
@@ -272,46 +261,41 @@ class Sistema{
             fazerCadastroFuncionario();
         }
         else{ //Caso o usuário escreva algo sem sentido
-            console.log(`${cadastro_escolhido} não funciona. Por favor, escreva "1" para cliente ou "2" para funcionario.\n\n`);
+            console.log(`\n${cadastro_escolhido} não funciona. Por favor, escreva "1" para cliente ou "2" para funcionario.\n\n`);
         }        
     }
 
     fazerCadastroCliente(){ //Função para fazer o cadastro do cliente
-        var nome_cadastrado = requisicao.question('Insira o seu nome: ');
-        console.log('\n');
+        var nome_cadastrado = requisicao.question('\nInsira o seu nome: ');
         const validacao_nome = /^[a-zA-Z\s]+$/.test(nome_cadastrado);
         if (validacao_nome == false){ //Caso seja um nome inválido
-            console.log(`O nome ${nome_cadastrado} não é um nome válido. Insira apenas letras e espaços. Tente novamente.\n\n`);
+            console.log(`\nO nome ${nome_cadastrado} não é um nome válido. Insira apenas letras e espaços. Tente novamente.\n\n`);
         }
         else{
-            var data_nascimento = requisicao.question('Insira a sua data de nascimento (DD/MM/AAAA): ');
-            console.log('\n');
+            var data_nascimento = requisicao.question('\nInsira a sua data de nascimento (DD/MM/AAAA): ');
             const validacao_data = validarData(data_nascimento);
             if (validacao_data == false){ //Caso seja uma data de nascimento inválida
                 console.log(' Tente novamente.\n\n');
             }
             else{
-                var cpf_cadastrado = requisicao.question('Insira o seu CPF (apenas número): ');
-                console.log('\n');
+                var cpf_cadastrado = requisicao.question('\nInsira o seu CPF (apenas número): ');
                 const validacao_cpf = validarCpf(cpf_cadastrado, this.lista_cliente, this.contador_id_cliente);
                 if (validacao_cpf == false){
                     console.log(' Tente novamente.\n\n');
                 }
                 else{
-                    var email_cadastrado = requisicao.question('Insira o seu email: ');
-                    console.log('\n');
+                    var email_cadastrado = requisicao.question('\nInsira o seu email: ');
                     const validacao_email = validarEmail(email_cadastrado, this.lista_cliente, this.contador_id_cliente);
                     if (validacao_email == false){
                         console.log(' Tente novamente.\n\n');                    
                     }
                     else{
-                        var senha_cadastrada = requisicao.question('Insira uma senha: ');
-                        console.log('\n');
+                        var senha_cadastrada = requisicao.question('\nInsira uma senha: ');
                         let id_cliente = String(this.contador_id_cliente).padStart(5,'0');
                         this.contador_id_cliente++;
                         const novo_cliente = new Cliente(id_cliente, nome_cadastrado, data_nascimento, cpf_cadastrado, email_cadastrado, senha_cadastrada);
                         this.lista_cliente.push(novo_cliente);
-                        console.log('Sua conta foi cadastrada com sucesso.\n\n');                                              
+                        console.log('\nSua conta foi cadastrada com sucesso.\n\n');                                              
                     }
                 } 
             }        
@@ -319,52 +303,109 @@ class Sistema{
     }
 
     fazerCadastroFuncionario(){ //Função para fazer o cadastro do funcionario
-        var nome_usuario = requisicao.question('Insira o seu nome de usuário: ');
-        console.log('\n');
-        var cpf_cadastrado = requisicao.question('Insira o seu CPF (apenas número): ');
-        console.log('\n');
+        var nome_usuario = requisicao.question('\nInsira o seu nome de usuário: ');
+        var cpf_cadastrado = requisicao.question('\nInsira o seu CPF (apenas número): ');
         const validacao_cpf = validarCpf(cpf_cadastrado, this.lista_funcionario, this.contador_id_funcionario);
         if (validacao_cpf == false){
             console.log(' Tente novamente.\n\n');
         }
         else{
-            var email_cadastrado = requisicao.question('Insira o seu email: ');
-            console.log('\n');
+            var email_cadastrado = requisicao.question('\nInsira o seu email: ');
             const validacao_email = validarEmail(email_cadastrado, this.lista_funcionario, this.contador_id_funcionario);
             if (validacao_email == false){
                 console.log(' Tente novamente.\n\n');
             }
             else{
-                var senha_cadastrada = requisicao.question('Insira uma senha: ');
-                console.log('\n');
+                var senha_cadastrada = requisicao.question('\nInsira uma senha: ');
                 let id_funcionario = String(this.contador_id_funcionario).padStart(4,'0');
                 this.contador_id_funcionario++;
                 const novo_funcionario = new Funcionario(id_funcionario, nome_usuario, cpf_cadastrado, email_cadastrado, senha_cadastrada);
                 this.lista_funcionario.push(novo_funcionario);
-                console.log('Sua conta foi cadastrada com sucesso.\n\n');                                              
+                console.log('\nSua conta foi cadastrada com sucesso.\n\n');                                              
             }     
         }        
-    }        
+    }
+    
+    fazerLogin(){ //Função de fazer login no sistema
+        var login_escolhido = requisicao.question('Você deseja fazer o login como:\n1) Cliente\n2) Funcionário\n')
+        if (login_escolhido == '1'){ //Caso o usuário logue como cliente
+            var email = requisicao.question('\nInsira o seu email: ');
+            const cliente = this.lista_cliente.find(indice => indice.email === email);
+            if (cliente == undefined){ //Caso o email não exista
+                console.log(`\nO email ${email} não existe no sistema.\n\n`);
+            }
+            else{
+                var senha = requisicao.question('\nInsira a sua senha: ');
+                if (senha != cliente.senha){ //Caso a senha esteja incorreta
+                    console.log(`\nA senha ${senha} está incorreta.\n\n`)
+                }
+                else{
+                    return cliente;
+                }
+            }    
+        }
+        else if (login_escolhido == '2'){ //Caso o usuário logue como funcionário
+            var email = requisicao.question('\nInsira o seu email: ');
+            const funcionario = this.lista_funcionario.find(indice => indice.email === email);
+            if (funcionario == undefined){ //Caso o email não exista
+                console.log(`\nO email ${email} não existe no sistema.\n\n`);
+            }
+            else{
+                var senha = requisicao.question('\nInsira a sua senha: ');
+                if (senha != funcionario.senha){ //Caso a senha esteja incorreta
+                    console.log(`\nA senha ${senha} está incorreta.\n\n`)
+                }
+                else{
+                    return funcionario;
+                }
+            }            
+        }
+        else{ //Caso o usuário escreva algo sem sentido
+            console.log(`\n${login_escolhido} não funciona. Por favor, escreva "1" para cliente ou "2" para funcionario.\n\n`);
+        }
+    }
+
+    sairPrograma(opcao){
+        var confirmacao = requisicao.question('Deseja realmente sair do programa? Todos os dados serão perdidos permanente. (s -> sim / n -> não)\n');
+        let sucesso = 0;
+        let opcao_final = opcao;
+        while (sucesso == 0){
+            if(confirmacao == 's'){
+                console.log('\nSistema finalizado. Volte sempre!');
+                sucesso = 1;
+                opcao_final = '3';
+            }
+            else if(confirmacao == 'n'){
+                sucesso = 1;
+                opcao_final = '';
+            }
+            else{
+                console.log(`\n${confirmacao} não funciona. Por favor, responda com "s" para sim ou "n" para não.\n\n`);
+            }
+        }
+        
+        return opcao_final;
+    }
 }
 
 
 function validarData(data){ //função para verificar se uma data existe
     let validacao;
     if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data)){ // Verifica se o formato está correto: DD/MM/AAAA
-        console.log(`A data ${data} não está no formato válido. (DD/MM/AAAA)`);       
+        console.log(`\nA data ${data} não está no formato válido. (DD/MM/AAAA)`);       
         validacao = false;
     }
     else {
         const [dia, mes, ano] = data.split('/').map(Number);
         if (mes < 1 || mes > 12 || dia < 1 || ano < 2024 || ano > 9999) { //Verifica se os números fazem sentido
-            console.log(`A data ${data} não faz sentido.`);
+            console.log(`\nA data ${data} não faz sentido.`);
             validacao = false;
         }
         else{
             const data_escolhida = new Date(ano, mes - 1, dia); //Verifica se realmente existe
             validacao = data_escolhida.getDate() === dia && data_escolhida.getMonth() === mes - 1 && data_escolhida.getFullYear() === ano;
             if (validacao == false){
-                console.log(`A data ${data} não existe.`)
+                console.log(`\nA data ${data} não existe.`)
             }
         }
     }
@@ -379,11 +420,11 @@ function validarCheckInCheckOut(data_check_in,data_check_out){ //função para v
     const check_in = new Date(ano_check_in, mes_check_in - 1, dia_check_in);
     const check_out = new Date(ano_check_out, mes_check_out - 1, dia_check_out);
     if(check_out < check_in){ //Caso a data de saída venha antes da data de entrada
-        console.log(`A data de saída ${data_check_out} não pode vir antes da data de entrada ${data_check_in}.`);
+        console.log(`\nA data de saída ${data_check_out} não pode vir antes da data de entrada ${data_check_in}.`);
         validacao = false;
     }
     else if(check_out == check_in){ //Caso as datas sejam no mesmo dia
-        console.log(`A data de saída não pode ser a mesma da data de entrada (${data_check_out}).`);
+        console.log(`\nA data de saída não pode ser a mesma da data de entrada (${data_check_out}).`);
         validacao = false;
     }
     else{
@@ -398,15 +439,15 @@ function validarCpf(cpf,lista,contador){ //função para validar o CPF
     const cpf_escolhido = lista.find(indice => indice.cpf === cpf);            
     const validacao_cpf = /^[0-9]+$/.test(cpf);
     if (validacao_cpf == false){ //Caso o CPF não tenha apenas número
-        console.log(`O CPF ${cpf} não é um CPF válido, porque não contem apenas número.\n\n`);
+        console.log(`\nO CPF ${cpf} não é um CPF válido, porque não contem apenas número.`);
         validacao = false;
     }
     else if (cpf.length != 11){ //Caso o tamanho do CPF não esteja no padrão
-        console.log(`O CPF ${cpf} não é um CPF válido.\n\n`);
+        console.log(`\nO CPF ${cpf} não é um CPF válido.`);
         validacao = false;
     }
     else if (cpf_escolhido != undefined){ //Caso o CPF já tenha sido cadastrado
-        console.log(`O CPF ${cpf} já foi cadastrado.\n\n`);
+        console.log(`\nO CPF ${cpf} já foi cadastrado.`);
         validacao = false;
     }
     else{
@@ -421,14 +462,54 @@ function validarEmail(email,lista,contador){ //função para validar o email
     const email_escolhido = lista.find(indice => indice.email === email);
     const validacao_email = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
     if (validacao_email == false){ //Caso seja um email inválido
-        console.log(`O email ${email} não é um email válido.\n\n`);
+        console.log(`\nO email ${email} não é um email válido.`);
     }
     else if (email_escolhido != undefined){ //Caso o email já tenha sido cadastrado
-        console.log(`O email ${email} já foi cadastrado.\n\n`);
+        console.log(`\nO email ${email} já foi cadastrado.`);
     }
     else{
         validacao = true;
     }
 
     return validacao;
+}
+
+const sistema = new Sistema();
+
+let opcao = '';
+while (opcao != '3'){
+    console.log('\n1) Fazer Login\n2)Fazer Cadastro\n3)Sair do programa\n\n');
+    opcao = requisicao.question('Escolha uma opção: ');
+    switch (opcao){
+        case '1':
+            var login = sistema.fazerLogin();
+            if (login instanceof Cliente){
+                let opcao_cliente = '';
+                while (opcao_cliente != '7'){
+                    console.log('\n1) Ver meus Dados\n2) Ver Lista de Quartos\n3) Fazer Reserva\n4)Finalizar Reserva\n5) Cancelar Reserva\n6)Ver minhas Reservas\n7)Deslogar\n');
+                    opcao_cliente = requisicao.question('Escolha uma opção: ');
+                    switch (opcao_cliente){
+                        case '1':
+                            
+                    }
+                }
+            }
+            else if (login instanceof Funcionario){
+                let opcao_funcionario = '';
+                while (opcao_funcionario != '7'){
+                    console.log('\n1)Ver meus Dados\n2)Ver Lista de Reservas\n3)Ver Lista de Quartos\n4)Ver Lista de Clientes\n5)Mudar Status da Reserva\n6)Adicionar Quarto\n7)Deslogar\n');
+                    opcao_funcionario = requisicao.question('Escolha uma opção: ');
+                    switch (opcao_funcionario){
+                        case '1':
+                        
+                    }
+                }
+            }
+        case '2':
+            sistema.fazerCadastro();
+        case '3':
+            opcao = sistema.sairPrograma();
+        default:
+            console.log(`${opcao} não é uma opcao válida. Escolha apenas o número de uma das opções.`);
+    }
 }
